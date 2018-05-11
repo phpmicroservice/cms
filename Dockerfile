@@ -38,4 +38,3 @@ EXPOSE 9502
 WORKDIR /var/www/html/
 RUN composer install
 CMD php start/start.php
-

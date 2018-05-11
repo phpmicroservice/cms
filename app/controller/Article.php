@@ -14,12 +14,25 @@ class Article extends Controller
 
     public function index()
     {
-
+        $where = [
+            'user_id' => $this->getData('pid', 0),
+            'cate_id' => $this->getData('cate_id', 0),
+            'type_n' => $this->getData('type_n'),
+            'search_key' => $this->getData('search_key'),
+        ];
+        $page = $this->getData('p', 1);
+        $rows = $this->getData('rows', 10);
+        $server = new \app\logic\Article();
+        $re = $server->lists($where, $page, $rows);
+        $this->send($re);
     }
 
     public function add()
     {
-
+        $data = $this->getData();
+        $server = new \app\logic\Article();
+        $re = $server->add($this->user_id, $data);
+        $this->send($re);
     }
 
 

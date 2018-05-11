@@ -38,11 +38,11 @@ class Controller extends \pms\Controller
      * 获取数据
      * @param $pa
      */
-    public function getData($name = '')
+    public function getData($name = '', $defind = null)
     {
         $d = $this->connect->getData();
         if ($name) {
-            return $d[$name] ?? null;
+            return $d[$name] ?? $defind;
         }
         return $d;
     }
@@ -59,6 +59,9 @@ class Controller extends \pms\Controller
             $d = $re->toArray();
             $this->connect->send_error($d['message'], $d['data'], 424);
         } else {
+            if (is_object($re)) {
+                $re = json_decode(json_encode($re));
+            }
             $this->connect->send_succee($re, '成功');
         }
     }
