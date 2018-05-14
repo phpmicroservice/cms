@@ -10,7 +10,7 @@ use pms\Validation;
  * Class ArticleAdd
  * @package app\validation
  */
-class ArticleAdd extends Validation
+class ArticleEdit extends Validation
 {
     //定义验证规则
     protected $rule = [
@@ -54,14 +54,5 @@ class ArticleAdd extends Validation
             ]
         ]
     ];
-
-    protected function initialize()
-    {
-        $this->add_uq('content', [
-            'model' => new article(),
-            'message' => 'uq'
-        ]);
-        return parent::initialize();
-    }
 
 }

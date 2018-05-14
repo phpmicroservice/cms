@@ -36,9 +36,15 @@ class Article extends Controller
     }
 
 
+    /**
+     * 编辑属性
+     */
     public function edit()
     {
-
+        $data = $this->getData();
+        $server = new \app\logic\Article();
+        $re = $server->edit($this->user_id, $data);
+        $this->send($re);
     }
 
     public function dele()
@@ -48,6 +54,10 @@ class Article extends Controller
 
     public function info()
     {
+        $id = $this->getData('id');
+        $server = new \app\logic\Article();
+        $re = $server->info($this->user_id, $id);
+        $this->send($re);
 
     }
 }

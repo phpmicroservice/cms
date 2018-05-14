@@ -4,10 +4,42 @@ namespace app\logic;
 
 use app\Base;
 use app\validation\ArticleAdd;
+use pms\Validation\Validator\ServerAction;
 
 class Article extends Base
 {
 
+
+    public function edit($data)
+    {
+        # 过滤
+        $filter = new \app\filterTool\ArticleEdit();
+        $filter->filter($data);
+        //验证
+        $validation = new Validation();
+        $validation->validate($data);
+        if ($validation->getMessage()) {
+            return $validation->getMessage();
+        }
+        $dataBoj = \app\model\article::findFirst([
+            'id = :id:', 'bind' => [
+                'id' => $data['id']
+            ]
+        ]);
+        $data['update_time'] = time();
+        if (!$dataBoj) {
+            return "不存在的数据!";
+        }
+        Trace::add('info', $data);
+        $dataBoj->setData($data);
+        $re = $dataBoj->update();
+        if ($re === false) {
+            return $dataBoj->getMessage();
+        } else {
+            return true;
+        }
+
+    }
 
     public static function ids2list($id_list)
     {
@@ -36,7 +68,6 @@ class Article extends Base
      */
     public static function edit_admin($id, $data)
     {
-        Trace::add('info', func_get_args());
         //验证
         $validation = new Validation();
         $validation->validate($data);
@@ -181,17 +212,42 @@ class Article extends Base
     public function add($user_id, array $data)
     {
         $data['user_id'] = $user_id;
+        # 过滤
+        $filter = new \app\filterTool\ArticleAdd();
+        $filter->filter($data);
         //验证
         $validation = new ArticleAdd();
+        $validation->add_Validator('content', [
+            'message' => 'content',
+            'name' => ServerAction::class,
+            'data' => [
+                'id' => $data['content'],
+                'type' => 'cms',
+                'user_id' => $user_id
+            ],
+            'server_action' => 'article@/server/validation'
+        ]);
         if (!$validation->validate($data)) {
             return $validation->getMessages();
         }
+        $tm = $this->transactionManager->get();
         //验证通过 进行插入
         $ArticleModel = new \app\model\article();
-        $re = $ArticleModel->save($data);
-        if ($re === false) {
+        if (!$ArticleModel->save($data)) {
+            $tm->rollback();
             return $ArticleModel->getMessages();
         }
+        # 进行关联更新
+        $re = $this->proxyCS->request_return('article', '/server/validation', [
+            'id' => $data['content'],
+            'type' => 'cms',
+            'user_id' => $user_id
+        ]);
+        if (is_array($re) && $re['e']) {
+            $tm->rollback();
+            return false;
+        }
+        $tm->commit();
         return true;
     }
 
@@ -218,18 +274,15 @@ class Article extends Base
     }
 
     /**
+     * 信息
      * @param $id
      */
-    public function info($id)
+    public function info($user_id, $id)
     {
-        $model = \logic\Article\model\article::findFirstById($id);
+        $model = \app\model\article::findFirstById($id);
         if ($model === false) {
             return '_empty-info';
         }
-        # 读取附件信息
-        $model->cover_id = \logic\Attachment\attachmentArray::list4id($model->cover_id);
-        $model->attachment = \logic\Attachment\attachmentArray::list4id($model->attachment);
-
 
         return $model;
     }
