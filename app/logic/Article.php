@@ -10,37 +10,6 @@ class Article extends Base
 {
 
 
-    public function edit($data)
-    {
-        # 过滤
-        $filter = new \app\filterTool\ArticleEdit();
-        $filter->filter($data);
-        //验证
-        $validation = new Validation();
-        $validation->validate($data);
-        if ($validation->getMessage()) {
-            return $validation->getMessage();
-        }
-        $dataBoj = \app\model\article::findFirst([
-            'id = :id:', 'bind' => [
-                'id' => $data['id']
-            ]
-        ]);
-        $data['update_time'] = time();
-        if (!$dataBoj) {
-            return "不存在的数据!";
-        }
-        Trace::add('info', $data);
-        $dataBoj->setData($data);
-        $re = $dataBoj->update();
-        if ($re === false) {
-            return $dataBoj->getMessage();
-        } else {
-            return true;
-        }
-
-    }
-
     public static function ids2list($id_list)
     {
         $list = service\Article::ids2list($id_list);
@@ -99,6 +68,37 @@ class Article extends Base
         } else {
             return true;
         }
+    }
+
+    public function edit($data)
+    {
+        # 过滤
+        $filter = new \app\filterTool\ArticleEdit();
+        $filter->filter($data);
+        //验证
+        $validation = new Validation();
+        $validation->validate($data);
+        if ($validation->getMessage()) {
+            return $validation->getMessage();
+        }
+        $dataBoj = \app\model\article::findFirst([
+            'id = :id:', 'bind' => [
+                'id' => $data['id']
+            ]
+        ]);
+        $data['update_time'] = time();
+        if (!$dataBoj) {
+            return "不存在的数据!";
+        }
+        Trace::add('info', $data);
+        $dataBoj->setData($data);
+        $re = $dataBoj->update();
+        if ($re === false) {
+            return $dataBoj->getMessage();
+        } else {
+            return true;
+        }
+
     }
 
     /**

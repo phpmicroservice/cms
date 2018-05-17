@@ -31,59 +31,6 @@ class article extends Model
         return true;
     }
 
-
-    /**
-     * @param $id
-     */
-    public function info($id)
-    {
-        $model = \logic\Article\model\article::findFirstById($id);
-        if ($model === false) {
-            return '_empty-info';
-        }
-        # 读取附件信息
-        $model->cover_id = \logic\Attachment\attachmentArray::list4id($model->cover_id);
-        $model->attachment = \logic\Attachment\attachmentArray::list4id($model->attachment);
-
-
-        return $model;
-    }
-
-    /**
-     * @param $id
-     */
-    public function info4user($id, $user_id)
-    {
-        $model = \logic\Article\model\article::findFirst([
-            'id = :id: and uid =:uid:',
-            'bind' => [
-                'id' => $id,
-                'uid' => $user_id
-            ]
-        ]);
-        if ($model === false) {
-            return '_empty-info';
-        }
-        # 读取点赞 praise ,收藏信息
-
-        return self::call_info($model->toArray(), $user_id);
-    }
-
-    /**
-     * 处理数据
-     * @param array $data
-     */
-    public static function call_info(array $data, $user_id)
-    {
-        $praise = \logic\user\praise::info($data['id'], 'article', $user_id);
-        $data['praise'] = (int)$praise;
-
-        $collect = \logic\user\collect::is_collect($data['id'], 'article', $user_id);
-        $data['collect'] = $collect;
-        $data['cover_id'] = \logic\Attachment\attachmentArray::list4id($data['cover_id']);
-        return $data;
-    }
-
     /**
      * 下一篇
      * @return string
@@ -95,46 +42,6 @@ class article extends Model
             return [];
         }
         return $model;
-    }
-
-    /**
-     * @param $id
-     * @return array|\Phalcon\Mvc\Model
-     */
-    public function ago_info($id)
-    {
-        $model = \logic\Article\model\article::ago_info($id);
-        if ($model === false) {
-            return [];
-        }
-        return $model;
-    }
-
-    /**
-     * 文章回复
-     * @param type $uid
-     * @param type $data
-     * @return type
-     */
-    public function reply($user_id, $data)
-    {
-
-        //验证
-        $validation = new replyValidation();
-        $validation->validate($data);
-        if ($validation->getMessage()) {
-            return $validation->getMessage();
-        }
-        # 验证通过 组合数据
-        Trace::add('info1', $data);
-        $data2 = [];
-        $data2['type'] = 'article';
-        $data2['content'] = $data['content'];
-        $data2['title'] = $data['title'];
-        $data2['correlation_id'] = $data['re_id'];
-        $data2['reply_reply_id'] = $data['reply_reply_id'];
-        $reService = new  \logic\Bbs\correlation();
-        return $reService->reply_correlation($user_id, $data2);
     }
 
     /**
@@ -206,6 +113,81 @@ class article extends Model
     }
 
     /**
+     * @param $id
+     */
+    public function info4user($id, $user_id)
+    {
+        $model = \logic\Article\model\article::findFirst([
+            'id = :id: and uid =:uid:',
+            'bind' => [
+                'id' => $id,
+                'uid' => $user_id
+            ]
+        ]);
+        if ($model === false) {
+            return '_empty-info';
+        }
+        # 读取点赞 praise ,收藏信息
+
+        return self::call_info($model->toArray(), $user_id);
+    }
+
+    /**
+     * 处理数据
+     * @param array $data
+     */
+    public static function call_info(array $data, $user_id)
+    {
+        $praise = \logic\user\praise::info($data['id'], 'article', $user_id);
+        $data['praise'] = (int)$praise;
+
+        $collect = \logic\user\collect::is_collect($data['id'], 'article', $user_id);
+        $data['collect'] = $collect;
+        $data['cover_id'] = \logic\Attachment\attachmentArray::list4id($data['cover_id']);
+        return $data;
+    }
+
+    /**
+     * @param $id
+     * @return array|\Phalcon\Mvc\Model
+     */
+    public function ago_info($id)
+    {
+        $model = \logic\Article\model\article::ago_info($id);
+        if ($model === false) {
+            return [];
+        }
+        return $model;
+    }
+
+    /**
+     * 文章回复
+     * @param type $uid
+     * @param type $data
+     * @return type
+     */
+    public function reply($user_id, $data)
+    {
+
+        //验证
+        $validation = new replyValidation();
+        $validation->validate($data);
+        if ($validation->getMessage()) {
+            return $validation->getMessage();
+        }
+        # 验证通过 组合数据
+        Trace::add('info1', $data);
+        $data2 = [];
+        $data2['type'] = 'article';
+        $data2['content'] = $data['content'];
+        $data2['title'] = $data['title'];
+        $data2['correlation_id'] = $data['re_id'];
+        $data2['reply_reply_id'] = $data['reply_reply_id'];
+        $reService = new  \logic\Bbs\correlation();
+        return $reService->reply_correlation($user_id, $data2);
+    }
+
+    /**
      * 增加文章
      * @param type $data
      */
@@ -236,7 +218,6 @@ class article extends Model
         return true;
     }
 
-
     /**
      * 查看量 增加+
      * @param $forum_id
@@ -257,5 +238,22 @@ class article extends Model
             return $info->getMessage();
         }
         return true;
+    }
+
+    /**
+     * @param $id
+     */
+    public function info($id)
+    {
+        $model = \logic\Article\model\article::findFirstById($id);
+        if ($model === false) {
+            return '_empty-info';
+        }
+        # 读取附件信息
+        $model->cover_id = \logic\Attachment\attachmentArray::list4id($model->cover_id);
+        $model->attachment = \logic\Attachment\attachmentArray::list4id($model->attachment);
+
+
+        return $model;
     }
 }
