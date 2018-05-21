@@ -27,6 +27,9 @@ class Article extends Controller
         $this->send($re);
     }
 
+    /**
+     * 增加
+     */
     public function add()
     {
         $data = $this->getData();
