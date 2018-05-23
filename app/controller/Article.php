@@ -61,6 +61,5 @@ class Article extends Controller
         $server = new \app\logic\Article();
         $re = $server->info($this->user_id, $id);
         $this->send($re);
-
     }
 }

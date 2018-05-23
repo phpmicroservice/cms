@@ -39,15 +39,11 @@ class Article extends Base
 
     private static function call_where(\Phalcon\Mvc\Model\Query\Builder $builder, $where)
     {
-
-        output(func_get_args(), 41);
-
         if (isset($where['user_id']) && !empty($where['user_id'])) {
             $builder->andwhere(' uid= :uid:', [
                 'uid' => $where['user_id']
             ]);
         }
-
         if (isset($where['cate_id']) && !empty($where['cate_id'])) {
             $builder->andwhere(' category_id= :category_id:', [
                 'category_id' => $where['cate_id']
@@ -64,7 +60,6 @@ class Article extends Base
             $builder->where("title LIKE :title:", [
                 "title" => "%" . $where['search_key'] . "%"]);
         }
-
         return $builder;
     }
 

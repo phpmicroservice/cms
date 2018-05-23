@@ -4,6 +4,7 @@ namespace app\logic;
 
 use app\Base;
 use app\validation\ArticleAdd;
+use app\validation\ArticleEdit;
 use pms\Validation\Validator\ServerAction;
 
 class Article extends Base
@@ -39,8 +40,8 @@ class Article extends Base
     {
         //验证
         $validation = new Validation();
-        $validation->validate($data);
-        if ($validation->getMessage()) {
+
+        if (!$validation->validate($data)) {
             return $validation->getMessage();
         }
         $articleModel = new model\article();
@@ -70,16 +71,21 @@ class Article extends Base
         }
     }
 
-    public function edit($data)
+    /**
+     * 编辑
+     * @param $user_id
+     * @param $data
+     * @return bool|string
+     */
+    public function edit($user_id, $data)
     {
         # 过滤
         $filter = new \app\filterTool\ArticleEdit();
         $filter->filter($data);
         //验证
-        $validation = new Validation();
-        $validation->validate($data);
-        if ($validation->getMessage()) {
-            return $validation->getMessage();
+        $validation = new ArticleEdit();
+        if (!$validation->validate($data)) {
+            return $validation->getMessages();
         }
         $dataBoj = \app\model\article::findFirst([
             'id = :id:', 'bind' => [
@@ -90,7 +96,6 @@ class Article extends Base
         if (!$dataBoj) {
             return "不存在的数据!";
         }
-        Trace::add('info', $data);
         $dataBoj->setData($data);
         $re = $dataBoj->update();
         if ($re === false) {
@@ -238,7 +243,7 @@ class Article extends Base
             return $ArticleModel->getMessages();
         }
         # 进行关联更新
-        $re = $this->proxyCS->request_return('article', '/server/validation', [
+        $re = $this->proxyCS->request_return('article', '/server/correlation', [
             'id' => $data['content'],
             'type' => 'cms',
             'user_id' => $user_id
