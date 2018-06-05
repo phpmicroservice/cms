@@ -10,7 +10,9 @@ namespace app;
 class Alc extends Base
 {
     public $user_id;
-
+    public $serverTask=[
+        'demo','server','index'
+    ];
     /**
      *
      * beforeDispatch 在调度之前
@@ -20,12 +22,12 @@ class Alc extends Base
      */
     public function beforeDispatch(\Phalcon\Events\Event $Event, \pms\Dispatcher $dispatcher)
     {
-        if ($dispatcher->getTaskName() == 'server' || $dispatcher->getTaskName() == 'index') {
+        if (in_array($dispatcher->getTaskName(),$this->serverTask) ) {
             # 进行服务间鉴权
             return true;
         }
         if (empty($dispatcher->session)) {
-            $dispatcher->connect->send_error('没有权限!!', [], 401);
+            $dispatcher->connect->send_error('没有初始化session!!', [], 500);
             return false;
         }
         # 进行rbac鉴权

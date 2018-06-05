@@ -10,11 +10,26 @@ use pms\Validation\Validator\ServerAction;
 class Article extends Base
 {
 
+    public function va_ex($id)
+    {
+        $mo = \app\model\article::findFirstById($id);
+        if (empty($mo)) {
+            return false;
+        }
+        return true;
 
+    }
+
+
+    /**
+     * id转换成列表
+     * @param $id_list
+     * @return mixed
+     */
     public static function ids2list($id_list)
     {
         $list = service\Article::ids2list($id_list);
-        return \tool\Arr::array_change_index($list->toArray(), 'id');
+        return \funch\Arr::array_change_index($list->toArray(), 'id');
     }
 
     /**
