@@ -9,7 +9,7 @@ use app\Controller;
  * Class Service
  * @package app\controller
  */
-class Service extends Controller
+class Server extends Controller
 {
 
 
