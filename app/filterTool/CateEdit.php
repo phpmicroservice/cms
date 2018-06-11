@@ -20,6 +20,7 @@ class CateEdit extends FilterTool
             ['name', 'string'],
             ['pid', 'int'],
             ['meta_title', 'string'],
+            ['keywords', 'string'],
             ['description', 'string'],
             ['allow_publish', 'int'],
             ['display', 'int'],

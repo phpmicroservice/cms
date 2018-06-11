@@ -15,6 +15,7 @@ class CateFilter extends FilterTool
             ['pid', 'int'],
             ['pid', 'int'],
             ['meta_title', 'string'],
+            ['keywords', 'string'],
             ['description', 'string'],
             ['allow_publish', 'int'],
             ['display', 'int'],
