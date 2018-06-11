@@ -20,19 +20,36 @@ class Cover extends Base
      */
     public function setcover($article_id, $file_id)
     {
+        # 读取数据
+        $info = $this->info($article_id);
+        if (!($info instanceof \app\model\cover)) {
+            return false;
+        }
         # x先验证
         $va = new Validation();
         $va->add_Validator('file_id', [
             'name' => Validation\Validator\ServerAction::class,
-            'server_action' => 'file@/server/'
+            'server_action' => 'file@/server/ex_array',
+            'data' => [
+                'array_id' => $info->file_array_id,
+                'type' => 'cms',
+                'file_id' => $file_id
+            ]
         ]);
+        if ($va->validate([''])) {
+
+        }
+        # 验证完成
 
         $info = $this->info($article_id);
         if (!($info instanceof \app\model\cover)) {
             return false;
         }
-
-
+        $info->cover_file_id = $file_id;
+        if (!$info->save()) {
+            return $info->getMessages();
+        }
+        return true;
     }
 
     /**
@@ -41,11 +58,22 @@ class Cover extends Base
      */
     public function info($article_id)
     {
+        # 查看文章是否存在
+        $article = \app\model\article::findFirst([
+            'id =:article_id:', 'bind' => [
+                'article_id' => $article_id
+            ]
+        ]);
+        if (empty($article)) {
+            return false;
+        }
+
         $info = \app\model\cover::findFirst([
             'article_id =:article_id:', 'bind' => [
                 'article_id' => $article_id
             ]
         ]);
+
         if (empty($info)) {
             # 不存在,初始化
             # 创建一个集合

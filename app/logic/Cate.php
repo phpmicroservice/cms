@@ -96,13 +96,14 @@ class Cate extends Base
     public function edit($data)
     {
         # 进行数据过滤 和验证
-        $ft = new CateFilter();
+        $ft = new \app\filterTool\CateEdit();
         $ft->filter($data);
         $id = $data['id'] ?? 0;
         $va = new CateEdit();
         if (!$va->validate($data)) {
             return $va->getMessages();
         }
+
         # 验证完成
         $article_category = article_category::findFirst([
             'id = :id:', 'bind' => [
@@ -114,8 +115,7 @@ class Cate extends Base
         } else {
             return "empty-error";
         }
-        $article_category->setData($data);
-        if ($article_category->save() === false) {
+        if ($article_category->save($data) === false) {
             return $article_category->getMessage();
         }
         return true;
