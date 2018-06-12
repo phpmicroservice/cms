@@ -39,7 +39,6 @@ class Cate extends Base
         $builder = $modelsManager->createBuilder()
             ->from(article_category::class)
             ->orderBy("id");
-
         $builder = $this->call_where($builder, $where);
         $list = $builder->getQuery()->execute();
         return $list->toArray();
