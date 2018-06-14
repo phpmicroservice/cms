@@ -33,7 +33,7 @@ class Server extends Controller
         $where = $this->getData();
         $server = new \app\logic\Cate();
         $re = $server->lists($where);
-        $this->send([time()]);
+        $this->send($re);
     }
 
 }
