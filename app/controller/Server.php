@@ -12,7 +12,6 @@ use app\Controller;
 class Server extends Controller
 {
 
-
     /**
      * 验证是否存在
      */
