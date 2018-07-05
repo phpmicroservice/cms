@@ -25,6 +25,9 @@ class Alc extends Base
      */
     public function beforeDispatch(\Phalcon\Events\Event $Event, \pms\Dispatcher $dispatcher)
     {
+        if ($dispatcher->getTaskName() == 'demo') {
+            return true;
+        }
         if (in_array($dispatcher->getTaskName(), $this->serverTask)) {
             # 进行服务间鉴权
             return $this->server_auth($dispatcher);
