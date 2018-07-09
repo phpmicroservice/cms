@@ -27,17 +27,19 @@ class Demo extends \app\Controller
 
     public function tm()
     {
-
-        $re =$this->proxyCS->request_return('tm','/service/create',[
+        var_dump(30);
+        $re = $this->proxyCS->request('tm',
+            '/service/create', [
             'server'=>'cms',
             'tx_name'=>'demo',
             'tx_data'=>[
                 'name'=>time(),
-                'title'=>uniqid().'测试'
+                'title' => uniqid()
             ]
         ]);
-
+        var_dump($re);
         $this->connect->send_succee($re);
+
     }
 
     public function tm2()
