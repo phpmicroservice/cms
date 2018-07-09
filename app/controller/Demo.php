@@ -7,7 +7,7 @@ namespace app\controller;
  * Class Demo
  * @package app\controller
  */
-class Demo extends \pms\Controller
+class Demo extends \app\Controller
 {
 
 
@@ -26,6 +26,21 @@ class Demo extends \pms\Controller
     }
 
     public function tm()
+    {
+
+        $re =$this->proxyCS->request_return('tm','/service/create',[
+            'server'=>'cms',
+            'tx_name'=>'demo',
+            'tx_data'=>[
+                'name'=>time(),
+                'title'=>uniqid().'测试'
+            ]
+        ]);
+
+        $this->connect->send_succee($re);
+    }
+
+    public function tm2()
     {
 
         $this->swoole_server->task(['demo30', 'arg'], -1);
