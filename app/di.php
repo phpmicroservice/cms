@@ -159,9 +159,8 @@ $di->set(
 
 });
 
-
 $di->setShared('logger', function () {
-    $logger = new \pms\Logger\Adapter\MysqlLog('log');
+    $logger = new \Phalcon\Logger\Adapter\File(RUNTIME_DIR . 'log/' . date('YmdHi') . '.log');
     return $logger;
 });
 
@@ -171,7 +170,7 @@ $di->setShared('logger', function () {
  * configuration file
  */
 $di["db"] = function () use ($di) {
-    return new DbAdapter(
+    $connection = new DbAdapter(
         [
             "host" => getenv('MYSQL_HOST'),
             "port" => getenv('MYSQL_PORT'),
@@ -184,6 +183,21 @@ $di["db"] = function () use ($di) {
             ],
         ]
     );
+    // Listen all the database events
+    $eventsManager = new \Phalcon\Events\Manager();
+    $logger = $di->get('logger');
+    // Listen all the database events
+    $eventsManager->attach(
+        "db:beforeQuery",
+        function ($event, $connection) use ($logger) {
+            $logger->log(
+                $connection->getSQLStatement(),
+                \Phalcon\Logger::INFO
+            );
+        }
+    );
+    $connection->setEventsManager($eventsManager);
+    return $connection;
 };
 
 

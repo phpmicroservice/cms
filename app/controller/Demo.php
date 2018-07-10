@@ -27,18 +27,19 @@ class Demo extends \app\Controller
 
     public function tm()
     {
-        var_dump(30);
-        $re = $this->proxyCS->request('tm',
-            '/service/create', [
-            'server'=>'cms',
-            'tx_name'=>'demo',
-            'tx_data'=>[
+        $task_data = [
+            'name' => ucfirst('ademo') . 'Tx',
+            'data' => [
                 'name'=>time(),
                 'title' => uniqid()
-            ]
-        ]);
-        var_dump($re);
-        $this->connect->send_succee($re);
+            ],
+            'tx_name' => 'ademo'
+        ];
+        $connect = $this->connect;
+        $this->swoole_server->task($task_data, -1, function ($ser, $wid, $re) use ($connect) {
+            var_dump($re);
+            $connect->send_succee($re);
+        });
 
     }
 
