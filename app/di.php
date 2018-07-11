@@ -164,7 +164,6 @@ $di->setShared('logger', function () {
     return $logger;
 });
 
-
 /**
  * Database connection is created based in the parameters defined in the
  * configuration file
