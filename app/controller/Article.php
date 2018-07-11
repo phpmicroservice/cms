@@ -34,6 +34,7 @@ class Article extends Controller
     {
         $data = $this->getData();
         $server = new \app\logic\Article();
+        $server->setSwooleServer($this->swoole_server);
         $re = $server->add($this->user_id, $data);
         $this->send($re);
     }

@@ -10,17 +10,6 @@ use pms\Validation\Validator\ServerAction;
 class Article extends Base
 {
 
-    public function va_ex($id)
-    {
-        $mo = \app\model\article::findFirstById($id);
-        if (empty($mo)) {
-            return false;
-        }
-        return true;
-
-    }
-
-
     /**
      * id转换成列表
      * @param $id_list
@@ -84,6 +73,16 @@ class Article extends Base
         } else {
             return true;
         }
+    }
+
+    public function va_ex($id)
+    {
+        $mo = \app\model\article::findFirstById($id);
+        if (empty($mo)) {
+            return false;
+        }
+        return true;
+
     }
 
     /**
@@ -250,6 +249,50 @@ class Article extends Base
         if (!$validation->validate($data)) {
             return $validation->getMessages();
         }
+        # 涉及多服务同时同时更新采用全局事务
+
+
+        $task_data = [
+            'name' => 'ArticleAddTx',
+            'data' => $data
+        ];
+
+
+        $result = $this->swooleServer->taskwait($task_data, 20, -1);
+        if (!$result['re']) {
+            # 失败
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * 增加文章
+     * @param type $data
+     */
+    public function add_bak($user_id, array $data)
+    {
+        $data['user_id'] = $user_id;
+        # 过滤
+        $filter = new \app\filterTool\ArticleAdd();
+        $filter->filter($data);
+        //验证
+        $validation = new ArticleAdd();
+        $validation->add_Validator('content', [
+            'message' => 'content',
+            'name' => ServerAction::class,
+            'data' => [
+                'id' => $data['content'],
+                'type' => 'cms',
+                'user_id' => $user_id
+            ],
+            'server_action' => 'article@/server/validation'
+        ]);
+        if (!$validation->validate($data)) {
+            return $validation->getMessages();
+        }
+        #
         $tm = $this->transactionManager->get();
         //验证通过 进行插入
         $ArticleModel = new \app\model\article();
@@ -270,6 +313,7 @@ class Article extends Base
         $tm->commit();
         return true;
     }
+
 
     /**
      * 查看量 增加+
