@@ -14,6 +14,27 @@ class Cover extends Base
 {
 
     /**
+     *
+     * @param array $article_id_list
+     */
+    public function cover_list4id(array $article_id_list)
+    {
+        $article_list = \app\model\cover::find([
+            'article_id IN ({article_id_list:array})',
+            'bind' => [
+                'article_id_list' => $article_id_list
+            ]
+        ]);
+        if (empty($article_list)) {
+            return [];
+        }
+        $list = $article_list->toArray();
+        output([$article_id_list, $list]);
+        return array_column($list, null, 'article_id');
+
+    }
+
+    /**
      * 设置封面
      * @param $article_id
      * @param $file_id

@@ -35,4 +35,22 @@ class Server extends Controller
         $this->send($re);
     }
 
+    public function cover_list()
+    {
+        $article_id_list = $this->getData('article_id_list');
+        $server = new \app\logic\Cover();
+        $re = $server->cover_list4id($article_id_list);
+        $this->send($re);
+    }
+
+
+    public function article_list()
+    {
+        $article_id_list = $this->getData('article_id_list');
+        $server = new \app\logic\Article();
+        $re = $server->ids2list($article_id_list);
+        $this->send($re);
+
+    }
+
 }
