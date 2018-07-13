@@ -50,7 +50,28 @@ class Server extends Controller
         $server = new \app\logic\Article();
         $re = $server->ids2list($article_id_list);
         $this->send($re);
+    }
 
+    public function article_list4c()
+    {
+        $cate_id = $this->getData('cate_id');
+        $now_page = $this->getData('p', 1);
+        $rows = $this->getData('r', 10);
+        $where = [
+            'cate_id' => $cate_id
+        ];
+        $server = new \app\logic\Article();
+        $re = $server->lists($where, $now_page, $rows);
+        $this->send($re);
+    }
+
+    public function article_info()
+    {
+        $article_id = $this->getData('article_id');
+        $with_content = $this->getData('with_content', false);
+        $server = new \app\logic\Article();
+        $re = $server->info2($article_id, $with_content);
+        $this->send($re);
     }
 
 }
