@@ -54,16 +54,14 @@ class Server extends Controller
 
     public function article_list4c()
     {
-        $cate_id = $this->getData('cate_id');
         $now_page = $this->getData('p', 1);
         $rows = $this->getData('r', 10);
-        $where = [
-            'cate_id' => $cate_id
-        ];
+        $where = $this->getData('where');
         $server = new \app\logic\Article();
         $re = $server->lists($where, $now_page, $rows);
         $this->send($re);
     }
+
 
     public function article_info()
     {

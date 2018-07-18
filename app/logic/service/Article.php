@@ -24,8 +24,7 @@ class Article extends Base
     {
         $modelsManager = \Phalcon\Di::getDefault()->get('modelsManager');
         $builder = $modelsManager->createBuilder()
-            ->from(\app\model\article::class)
-            ->orderBy("id");
+            ->from(\app\model\article::class);
         $builder = self::call_where($builder, $where);
         $paginator = new \pms\Paginator\Adapter\QueryBuilder(
             [
@@ -59,6 +58,19 @@ class Article extends Base
         if (isset($where['search_key']) && !empty($where['search_key'])) {
             $builder->where("title LIKE :title:", [
                 "title" => "%" . $where['search_key'] . "%"]);
+        }
+        if (isset($where['o']) && !empty($where['o'])) {
+            # 排序
+            if (isset($where['desc'])) {
+                if ($where['desc']) {
+                    $order2 = ' desc';
+                } else {
+                    $order2 = ' asc';
+                }
+            } else {
+                $order2 = ' asc';
+            }
+            $builder->orderBy($where['o'] . $order2);
         }
         return $builder;
     }
