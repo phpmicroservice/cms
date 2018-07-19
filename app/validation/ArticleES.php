@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: toplink_php1
- * Date: 2018/7/19
- * Time: 9:04
- */
 
 namespace app\validation;
 
@@ -27,7 +21,6 @@ class ArticleES extends Validation
         $this->add_exist('id', [
             'class_name_list' => new article()
         ]);
-
         return parent::initialize();
     }
 
