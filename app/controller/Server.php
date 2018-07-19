@@ -52,6 +52,9 @@ class Server extends Controller
         $this->send($re);
     }
 
+    /**
+     *  文章列表
+     */
     public function article_list4c()
     {
         $now_page = $this->getData('p', 1);

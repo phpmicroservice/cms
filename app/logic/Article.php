@@ -3,6 +3,7 @@
 namespace app\logic;
 
 use app\Base;
+use app\filterTool\ArticleES;
 use app\validation\ArticleAdd;
 use app\validation\ArticleEdit;
 use pms\Validation\Validator\ServerAction;
@@ -34,6 +35,30 @@ class Article extends Base
         return $model;
     }
 
+    /**
+     * 修改文章状态
+     * @param $user_id 修改人
+     * @param $data 数据
+     */
+    public function edit_status($user_id, $data)
+    {
+        $fes = new ArticleES();
+        $fes->filter($data);
+        $va = new \app\validation\ArticleES();
+        if (!$va->validate($data)) {
+            return $va->getErrorMessages();
+        }
+        $dataBoj = \app\model\article::findFirst([
+            'id = :id:', 'bind' => [
+                'id' => $data['id']
+            ]
+        ]);
+
+        if (!$dataBoj->save(['status' => $data['status']])) {
+            return false;
+        }
+        return true;
+    }
 
     public function va_ex($id)
     {

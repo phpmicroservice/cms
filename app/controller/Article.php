@@ -12,6 +12,9 @@ use app\Controller;
 class Article extends Controller
 {
 
+    /**
+     * 列表
+     */
     public function index()
     {
         $where = [
@@ -51,16 +54,42 @@ class Article extends Controller
         $this->send($re);
     }
 
+    /**
+     *
+     */
     public function dele()
     {
 
     }
 
+    /**
+     *
+     */
     public function info()
     {
         $id = $this->getData('id');
         $server = new \app\logic\Article();
         $re = $server->info($this->user_id, $id);
+        $this->send($re);
+    }
+
+    /**
+     * 更改状态
+     */
+    public function demo2()
+    {
+        $this->connect->send_succee([uniqid()]);
+    }
+
+    /**
+     * 更改状态
+     */
+    public function editstatus()
+    {
+
+        $data = $this->getData();
+        $server = new \app\logic\Article();
+        $re = $server->edit_status($this->user_id, $data);
         $this->send($re);
     }
 }
