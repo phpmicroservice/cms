@@ -170,11 +170,12 @@ class Article extends Base
         ];
 
         $result = $this->swooleServer->taskwait($task_data, 20, -1);
-        if (!$result['re']) {
+        if ($result['re'] === true) {
             # 失败
-            return false;
+            return true;
         }
-        return true;
+        return false;
+
     }
 
 
