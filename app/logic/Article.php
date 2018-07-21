@@ -147,6 +147,7 @@ class Article extends Base
         $filter->filter($data);
         //验证
         $validation = new ArticleAdd();
+
         $validation->add_Validator('content', [
             'message' => 'content',
             'name' => ServerAction::class,
