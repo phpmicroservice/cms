@@ -71,6 +71,8 @@ class Article extends Base
                 $order2 = ' asc';
             }
             $builder->orderBy($where['o'] . $order2);
+        }else{
+            $builder->orderBy('id desc');
         }
         return $builder;
     }
