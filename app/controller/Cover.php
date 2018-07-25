@@ -11,6 +11,7 @@ use app\Controller;
  */
 class Cover extends Controller
 {
+
     /**
      * 设置封面
      */
