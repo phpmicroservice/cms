@@ -25,32 +25,16 @@ class Demo extends \app\Controller
         ]);
     }
 
-    public function tm()
+    public function sub_id_list2()
     {
-        var_dump(30);
-        $re = $this->proxyCS->request('tm',
-            '/service/create', [
-            'server'=>'cms',
-            'tx_name'=>'demo',
-            'tx_data'=>[
-                'name'=>time(),
-                'title' => uniqid()
-            ]
-        ]);
-        var_dump($re);
-        $this->connect->send_succee($re);
-
+        $ser=new \app\logic\service\Article();
+        $re =$ser->sub_id_list2(64);
+        $this->send($re);
     }
 
     public function tm2()
     {
 
-        $this->swoole_server->task(['demo30', 'arg'], -1);
-//        $this->swoole_server->task(['demo30','arg'], -1, function ($server,$task_id,$data) {
-//            output(["这是在创建任务的时候定义的回调函数",get_class($server),$task_id,$data]);
-//       });
-        output(["这是控制器发送消息之前"]);
-        $this->connect->send_succee([123]);
     }
 
 }
