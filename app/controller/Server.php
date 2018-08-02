@@ -29,7 +29,7 @@ class Server extends Controller
      */
     public function cate_list()
     {
-        $where = $this->getData();
+        $where = $this->getData('where');
         $server = new \app\logic\Cate();
         $re = $server->lists($where);
         $this->send($re);
