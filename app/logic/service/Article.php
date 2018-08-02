@@ -47,9 +47,10 @@ class Article extends Base
         if (isset($where['cate_id']) && !empty($where['cate_id'])) {
             if (isset($where['with_sub']) && $where['with_sub']) {
                 # 读取所有子分类的文章
-                $sub_id_list = self::sub_id_list($where['cate_id']);
-                $builder->andwhere(' category_id = ({category_id:array})', [
-                    'category_id' => $sub_id_list
+                $sub_id_list=[$where['cate_id']];
+                $sub_id_list2= Cate::sub_id_list($where['cate_id']);
+                $builder->andwhere(' category_id in ({category_id:array})', [
+                    'category_id' => array_merge($sub_id_list,$sub_id_list2)
                 ]);
             } else {
                 $builder->andwhere(' category_id= :category_id:', [
@@ -87,47 +88,6 @@ class Article extends Base
         return $builder;
     }
 
-    /**
-     * 获取这个分类的所有子类
-     * @param $cate_id
-     */
-    private static function sub_id_list($cate_id)
-    {
-
-        $key = md5(__FILE__ . 'sub_id_list' . $cate_id);
-        $gCache=\Phalcon\Di::getDefault()->get('gCache');
-        if ($gCache->exists($key)) {
-        } else {
-            # 不存在则读取
-            $id_list = self::sub_id_list2($cate_id);
-            $gCache->save($key, $id_list);
-        }
-        return $gCache->get($key);
-    }
-
-    /**
-     * 获取这个分类的子类
-     * @param $cate_id
-     */
-    public static function sub_id_list2($cate_id, $infinite = true)
-    {
-        $idlist = article_category::find([
-            'pid = :pid:',
-            'bind' => [
-                'pid' => $cate_id
-            ],
-            'columns' => 'id'
-        ]);
-        $idlist = array_column($idlist->toArray(), 'id');
-        if ($infinite) {
-            foreach ($idlist as $id) {
-                $idlist2 = self::sub_id_list2($id);
-                $idlist = array_merge($idlist, $idlist2);
-            }
-        }
-        return $idlist;
-
-    }
 
 
 }

@@ -57,6 +57,12 @@ class Cate extends Base
                 'pid' => $where['pid']
             ]);
         }
+        if (isset($where['with_sub']) && !empty($where['with_sub'])) {
+            $idlist=self::sub_id_list($where['with_sub']);
+            $builder->andWhere(' id in ({id:array})', [
+                'id' => $idlist
+            ]);
+        }
         return $builder;
     }
 
@@ -162,6 +168,49 @@ class Cate extends Base
         } else {
             return "empty-error";
         }
+    }
+
+
+    /**
+     * 获取这个分类的所有子类
+     * @param $cate_id
+     */
+    public static function sub_id_list($cate_id)
+    {
+
+        $key = md5(__FILE__ . 'sub_id_list' . $cate_id);
+        $gCache=\Phalcon\Di::getDefault()->get('gCache');
+        if ($gCache->exists($key)) {
+        } else {
+            # 不存在则读取
+            $id_list = self::sub_id_list2($cate_id);
+            $gCache->save($key, $id_list);
+        }
+        return $gCache->get($key);
+    }
+
+    /**
+     * 获取这个分类的子类
+     * @param $cate_id
+     */
+    private static function sub_id_list2($cate_id, $infinite = true)
+    {
+        $idlist = article_category::find([
+            'pid = :pid:',
+            'bind' => [
+                'pid' => $cate_id
+            ],
+            'columns' => 'id'
+        ]);
+        $idlist = array_column($idlist->toArray(), 'id');
+        if ($infinite) {
+            foreach ($idlist as $id) {
+                $idlist2 = self::sub_id_list2($id);
+                $idlist = array_merge($idlist, $idlist2);
+            }
+        }
+        return $idlist;
+
     }
 
 }
