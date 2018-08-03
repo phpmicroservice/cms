@@ -17,7 +17,6 @@ class Alc extends Base
     ];
 
     /**
-     *
      * beforeDispatch 在调度之前
      * @param \Phalcon\Events\Event $Event
      * @param \Phalcon\Mvc\Dispatcher $Dispatcher
