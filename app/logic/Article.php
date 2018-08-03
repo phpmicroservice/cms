@@ -12,6 +12,20 @@ class Article extends Base
 {
 
     /**
+     * 物理删除
+     * @param $id
+     * @return bool
+     */
+    public function dele($id)
+    {
+        $model = \app\model\article::findFirstById($id);
+        if ($model instanceof \app\model\article) {
+            return $model->delete();
+        }
+        return false;
+    }
+
+    /**
      * id转换成列表
      * @param $id_list
      * @return mixed
@@ -28,7 +42,7 @@ class Article extends Base
      */
     public static function next_info($id)
     {
-        $model = \logic\Article\model\article::next_info($id);
+        $model = \app\model\article::next_info($id);
         if ($model === false) {
             return [];
         }
@@ -53,7 +67,6 @@ class Article extends Base
                 'id' => $data['id']
             ]
         ]);
-
         if (!$dataBoj->save(['status' => $data['status']])) {
             return false;
         }
@@ -260,7 +273,6 @@ class Article extends Base
         if ($model === false) {
             return '_empty-info';
         }
-
         return $model;
     }
 

@@ -59,7 +59,10 @@ class Article extends Controller
      */
     public function dele()
     {
-
+        $id=$this->getData('id');
+        $server = new \app\logic\Article();
+        $re = $server->dele($id);
+        $this->send($re);
     }
 
     /**
