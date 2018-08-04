@@ -44,6 +44,7 @@ class ArticleAddTx extends \pms\Task\TxTask
         //验证通过 进行插入
         $ArticleModel = new \app\model\article();
         if (!$ArticleModel->save($data)) {
+
             return $ArticleModel->getMessage();
         }
         $this->trueData['id'] = $ArticleModel->id;
