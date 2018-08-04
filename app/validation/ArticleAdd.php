@@ -20,8 +20,8 @@ class ArticleAdd extends Validation
             ],
             'stringLength' => [
                 "message" => "stringLength",
-                'min' => 2,
-                'max' => 20
+                'min' => 1,
+                'max' => 100
             ]
         ],
         'category_id' => [
