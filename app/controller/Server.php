@@ -35,6 +35,18 @@ class Server extends Controller
         $this->send($re);
     }
 
+    public function cate_info()
+    {
+        $id=$this->getData('id');
+        $server = new \app\logic\Cate();
+        $re = $server->info($id);
+        $this->send($re);
+    }
+
+
+    /**
+     * 封面列表
+     */
     public function cover_list()
     {
         $article_id_list = $this->getData('article_id_list');
