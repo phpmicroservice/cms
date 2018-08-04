@@ -64,7 +64,12 @@ class Controller extends \pms\Controller
             if (is_object($re)) {
                 $re = json_decode(json_encode($re));
             }
-            $this->connect->send_succee($re, '成功');
+            if(is_string($re)){
+                $this->connect->send_error($re, '失败');
+            }else{
+                $this->connect->send_succee($re, '成功');
+            }
+
         }
     }
 
