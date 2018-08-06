@@ -63,6 +63,12 @@ class Cate extends Base
                 'id' => $idlist
             ]);
         }
+        var_dump($where);
+        if (isset($where['display']) ) {
+            $builder->andWhere(' display =:display:', [
+                'display' => $where['display']
+            ]);
+        }
         return $builder;
     }
 

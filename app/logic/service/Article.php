@@ -67,9 +67,19 @@ class Article extends Base
             ]);
         }
         if (isset($where['search_key']) && !empty($where['search_key'])) {
-            $builder->where("title LIKE :title:", [
+            $builder->andwhere("title LIKE :title:", [
                 "title" => "%" . $where['search_key'] . "%"]);
         }
+        if (isset($where['level_gt']) && $where['level_gt']) {
+            $builder->andwhere("level > :level:", [
+                "level" => $where['level_gt'] ]);
+        }
+
+        if (isset($where['level_eq']) && $where['level_eq']) {
+            $builder->andwhere("level = :level:", [
+                "level" => $where['level_eq'] ]);
+        }
+
         if (isset($where['o']) && !empty($where['o'])) {
             # 排序
             if (isset($where['desc'])) {
