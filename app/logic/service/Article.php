@@ -66,9 +66,10 @@ class Article extends Base
                 'category_id' => $cate_id
             ]);
         }
-        if (isset($where['search_key']) && !empty($where['search_key'])) {
+        
+        if (isset($where['search_title']) && !empty($where['search_title'])) {
             $builder->andwhere("title LIKE :title:", [
-                "title" => "%" . $where['search_key'] . "%"]);
+                "title" => "%" . $where['search_title'] . "%"]);
         }
         if (isset($where['level_gt']) && $where['level_gt']) {
             $builder->andwhere("level > :level:", [
