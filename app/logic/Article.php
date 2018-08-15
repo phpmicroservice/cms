@@ -293,6 +293,7 @@ class Article extends Base
         $arr = $model->toArray();
         # 读取内容
         if ($with_content) {
+            
             $info = $this->proxyCS->request_return('article', '/server/info', ['id' => $arr['content']]);
             if (!is_array($info) || $info['e']) {
                 $arr['content_info'] = false;
