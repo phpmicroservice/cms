@@ -51,7 +51,8 @@ class Alc extends Base
      */
     private function server_auth(Dispatcher $dispatcher)
     {
-        $key = $dispatcher->connect->accessKey??'';
+        $key = $dispatcher->connect->accessKey ?? '';
+        $this->logger->info([APP_SECRET_KEY, $dispatcher->connect->getData(), $dispatcher->connect->f]);
         output([APP_SECRET_KEY, $dispatcher->connect->getData(), $dispatcher->connect->f], 'verify_access');
         if (!verify_access($key, APP_SECRET_KEY, $dispatcher->connect->getData(), $dispatcher->connect->f)) {
             $dispatcher->connect->send_error('accessKey-error', [], 412);

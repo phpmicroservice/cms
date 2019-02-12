@@ -14,6 +14,11 @@ if (is_string($re9)) {
     exit('defined :' . $re9);
 }
 
+if (APP_DEBUG) {
+    error_reporting(E_ALL);
+    ini_set('log_errors', 'On');
+    ini_set('error_log', './phplog.log');
+}
 
 //注册自动加载
 $loader = new \Phalcon\Loader();
