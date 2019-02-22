@@ -287,7 +287,7 @@ class Article extends Base
     {
         $model = \app\model\article::findFirstById($id);
         if ($model === false) {
-            output([$id, $model]);
+            \pms\output([$id, $model]);
             return '_empty-info';
         }
         $arr = $model->toArray();

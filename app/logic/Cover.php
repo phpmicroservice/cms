@@ -29,7 +29,7 @@ class Cover extends Base
             return [];
         }
         $list = $article_list->toArray();
-        output([$article_id_list, $list]);
+        \pms\output([$article_id_list, $list]);
         return array_column($list, null, 'article_id');
 
     }
